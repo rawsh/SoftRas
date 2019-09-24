@@ -27,19 +27,21 @@ class Projection(nn.Module):
 
 
 class LookAt(nn.Module):
-    def __init__(self, perspective=True, viewing_angle=30, viewing_scale=1.0, eye=None):
+    def __init__(self, perspective=True, viewing_angle=30, viewing_scale=1.0, eye=None, at=None, up=None):
         super(LookAt, self).__init__()
 
         self.perspective = perspective
         self.viewing_angle = viewing_angle
         self.viewing_scale = viewing_scale
         self._eye = eye
+	self._at = at
+	self._up = up
 
         if self._eye is None:
             self._eye = [0, 0, -(1. / math.tan(math.radians(self.viewing_angle)) + 1)]
 
     def forward(self, vertices):
-        vertices = srf.look_at(vertices, self._eye)
+        vertices = srf.look_at(vertices, self._eye, at=self._at, up=self._up)
         # perspective transformation
         if self.perspective:
             vertices = srf.perspective(vertices, angle=self.viewing_angle)
@@ -91,17 +93,25 @@ class Transform(nn.Module):
         mesh.vertices = self.transformer(mesh.vertices)
         return mesh
 
+    def set_at(self, new_at):
+        # Careful: only use in look_at mode
+        self.transformer._at = new_at
+
+    def set_up(self, new_up):
+        # Careful: only use in look_at mode
+        self.transformer._up = new_up
+
     def set_eyes_from_angles(self, distances, elevations, azimuths):
         if self.camera_mode not in ['look', 'look_at']:
             raise ValueError('Projection does not need to set eyes')
         self.transformer._eye = srf.get_points_from_angles(distances, elevations, azimuths)
 
-    def set_eyes(self, eyes):
+    def set_eye(self, eye):
         if self.camera_mode not in ['look', 'look_at']:
-            raise ValueError('Projection does not need to set eyes')
-        self.transformer._eye = eyes
+            raise ValueError('Projection does not need to set eye')
+        self.transformer._eye = eye
 
     @property
     def eyes(self):
-        return self.transformer._eyes
+        return self.transformer._eye
     
