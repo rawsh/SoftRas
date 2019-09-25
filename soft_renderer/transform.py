@@ -34,8 +34,8 @@ class LookAt(nn.Module):
         self.viewing_angle = viewing_angle
         self.viewing_scale = viewing_scale
         self._eye = eye
-	self._at = at
-	self._up = up
+        self._at = at
+        self._up = up
 
         if self._eye is None:
             self._eye = [0, 0, -(1. / math.tan(math.radians(self.viewing_angle)) + 1)]
@@ -53,7 +53,7 @@ class LookAt(nn.Module):
 class Look(nn.Module):
     def __init__(self, camera_direction=[0,0,1], perspective=True, viewing_angle=30, viewing_scale=1.0, eye=None):
         super(Look, self).__init__()
-        
+
         self.perspective = perspective
         self.viewing_angle = viewing_angle
         self.viewing_scale = viewing_scale
@@ -75,7 +75,7 @@ class Look(nn.Module):
 
 class Transform(nn.Module):
     def __init__(self, camera_mode='projection', P=None, dist_coeffs=None, orig_size=512,
-                 perspective=True, viewing_angle=30, viewing_scale=1.0, 
+                 perspective=True, viewing_angle=30, viewing_scale=1.0,
                  eye=None, camera_direction=[0,0,1]):
         super(Transform, self).__init__()
 
@@ -111,7 +111,9 @@ class Transform(nn.Module):
             raise ValueError('Projection does not need to set eye')
         self.transformer._eye = eye
 
+    def get_eye(self):
+        return self.transformer._eye
+
     @property
     def eyes(self):
         return self.transformer._eye
-    
