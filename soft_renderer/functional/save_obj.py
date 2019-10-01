@@ -58,13 +58,13 @@ def save_obj(filename, vertices, faces, textures=None, texture_res=16, texture_t
         f.write('#\n')
         f.write('\n')
 
-        if textures is not None:
+        if textures is not None and texture_type == 'surface': #?????????
             f.write('mtllib %s\n\n' % os.path.basename(filename_mtl))
 
         if textures is not None and texture_type == 'vertex':
             for vertex, color in zip(vertices, textures):
                 f.write('v %.8f %.8f %.8f %.8f %.8f %.8f\n' % (vertex[0], vertex[1], vertex[2], 
-                                                               color[0], color[1], color[2]))
+                                                               color[0],  color[1],  color[2]))
             f.write('\n')
         else:
             for vertex in vertices:
