@@ -85,6 +85,18 @@ class SoftRenderer(nn.Module):
     def set_gamma(self, gamma):
         self.rasterizer.gamma_val = gamma
 
+    def set_at_vec(self, at):
+        self.transform.set_at(at)
+
+    def set_up_vec(self, up):
+        self.transform.set_up(up)
+
+    def set_eye(self, new_eye):
+        self.transform.set_eye(new_eye)
+
+    def get_eye(self):
+        return self.transform.get_eye()
+
     def set_texture_mode(self, mode):
         assert mode in ['vertex', 'surface'], 'Mode only support surface and vertex'
 
